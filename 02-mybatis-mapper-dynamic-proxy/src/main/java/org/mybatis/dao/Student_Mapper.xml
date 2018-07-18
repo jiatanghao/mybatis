@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.mybatis.dao.IStudentDao">
+    
+
+    <!--parameterType可以省略-->
+    <insert id="insertStudent" parameterType="Student">
+        INSERT INTO student(name, age, score) VALUES (#{name}, #{age}, #{score})
+    </insert>
+    <insert id="insertStudentCachedId">
+        INSERT INTO student(name, age, score) VALUES (#{name}, #{age}, #{score})
+#         order=before表示先执行insert，再生产id --mysql默认
+        <selectKey resultType="int" keyProperty="id">
+            SELECT last_insert_id()
+        </selectKey>
+    </insert>
+    <delete id="deleteStudentById">
+        DELETE FROM student WHERE id = #{id}
+    </delete>
+    <update id="updateStudent">
+        UPDATE student SET name=#{name}, age=#{age}, score=#{score} WHERE id = #{id}
+    </update>
+
+    <select id="selectAllStudents" resultType="Student">
+        SELECT id, name, age, score FROM student
+    </select>
+
+
+    <select id="selectStudentById" resultType="Student">
+        SELECT id, name, age, score FROM student WHERE id = #{id}
+    </select>
+
+    <select id="selectStudentByName" resultType="Student">
+        SELECT id, name, age, score FROM student WHERE name LIKE '%' #{name} '%'
+    </select>
+    
+    <select id="selectStudentsByCondition" resultType="Student">
+        SELECT id, name, age, score
+        FROM student
+        WHERE name LIKE '%' #{name} '%'
+          AND age &gt; #{age}
+        AND score &gt; #{student.score}
+    </select>
+
+    <select id="selectStudentsByIndex" resultType="Student">
+        SELECT id, name, age, score
+        FROM student
+        WHERE name LIKE '%' #{arg0} '%'
+          AND age &gt; #{arg1}
+    </select>
+</mapper>
